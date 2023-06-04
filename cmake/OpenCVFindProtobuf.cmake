@@ -31,7 +31,13 @@ if(BUILD_PROTOBUF)
   set(HAVE_PROTOBUF TRUE)
 else()
   unset(Protobuf_VERSION CACHE)
-  find_package(Protobuf QUIET)
+  # First look for protobuf-config.cmake, and only later use
+  # FindProtobuf.cmake shipped with CMake, for compatibility
+  # with protobuf >= 22
+  find_package(Protobuf CONFIG QUIET)
+  if(NOT Protobuf_FOUND)
+    find_package(Protobuf QUIET)
+  endif()
 
   # Backwards compatibility
   # Define camel case versions of input variables
